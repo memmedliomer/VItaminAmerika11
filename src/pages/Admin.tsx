@@ -10,7 +10,7 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'promos' | 'orders'>('products');
 
-  const { language, products, categories, promoCodes, orders, addProduct, deleteProduct, addCategory, deleteCategory, addPromoCode, deletePromoCode } = useAppStore();
+  const { language, products, categories, promoCodes, orders, addProduct, deleteProduct, addCategory, deleteCategory, addPromoCode, deletePromoCode, updateOrderStatus } = useAppStore();
 
   // Product Form
   const [newProduct, setNewProduct] = useState<Partial<Product>>({ name: '', price: 0, description: '', categoryId: '', imageUrl: '' });
@@ -399,6 +399,40 @@ export default function Admin() {
                           </li>
                         ))}
                       </ul>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-500">{language === 'AZ' ? 'Status:' : 'Status:'}</span>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                          order.status === 'approved' ? 'bg-green-100 text-green-700' :
+                          order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {order.status === 'approved' ? (language === 'AZ' ? 'Təsdiqləndi' : 'Approved') :
+                           order.status === 'cancelled' ? (language === 'AZ' ? 'Ləğv Edildi' : 'Cancelled') :
+                           (language === 'AZ' ? 'Gözləyir' : 'Pending')}
+                        </span>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        {order.status !== 'approved' && (
+                          <button
+                            onClick={() => updateOrderStatus(order.id, 'approved')}
+                            className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                          >
+                            {language === 'AZ' ? 'Təsdiqlə' : 'Approve'}
+                          </button>
+                        )}
+                        {order.status !== 'cancelled' && (
+                          <button
+                            onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                            className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                          >
+                            {language === 'AZ' ? 'Ləğv Et' : 'Cancel'}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))
