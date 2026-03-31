@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAppStore, Product, Category, PromoCode } from '../store';
 import { Package, Tag, Ticket, ShoppingBag, Plus, Trash2, LogOut, Image as ImageIcon } from 'lucide-react';
 import { optimizeCloudinaryUrl } from '../lib/cloudinary';
+import logo from '../components/logo.jpg';
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -173,7 +174,7 @@ export default function Admin() {
       {/* Sidebar */}
       <div className="w-full md:w-64 bg-white border-r border-gray-200 p-6 flex flex-col">
         <div className="flex items-center gap-2 mb-8 text-green-700">
-          <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">V</div>
+          <img src={logo} alt="Vitamin Amerika Logo" className="w-10 h-10 object-contain rounded-full" />
           <span className="font-bold text-xl">Admin Panel</span>
         </div>
 
