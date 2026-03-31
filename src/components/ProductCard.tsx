@@ -33,9 +33,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-green-50 overflow-hidden hover:shadow-md transition-shadow group relative flex flex-col h-full">
+    <div className={`bg-white rounded-2xl shadow-sm border border-green-50 hover:shadow-md transition-shadow group relative flex flex-col h-full ${showDesc ? 'z-50' : 'z-10'}`}>
       <div 
-        className="relative aspect-square overflow-hidden bg-white p-6 cursor-pointer"
+        className="relative aspect-square overflow-hidden rounded-t-2xl bg-white p-6 cursor-pointer"
         onClick={() => setShowDesc(!showDesc)}
       >
         <img 
@@ -87,14 +87,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         <AnimatePresence>
           {showDesc && (
             <motion.div 
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden mt-3"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-[calc(100%+8px)] left-0 right-0 z-50 bg-white p-4 rounded-xl shadow-xl border border-green-100 text-sm text-gray-700 leading-relaxed max-h-60 overflow-y-auto"
             >
-              <div className="p-3 bg-green-50 rounded-lg border border-green-100 text-sm text-gray-700 leading-relaxed">
-                {product.description}
-              </div>
+              {product.description}
             </motion.div>
           )}
         </AnimatePresence>
