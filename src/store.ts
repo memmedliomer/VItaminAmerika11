@@ -98,11 +98,18 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   fetchData: async () => {
     try {
+      const fetchJson = async (url: string) => {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+      };
+
       const [prods, cats, promos, orders] = await Promise.all([
-        fetch('/api/products').then(res => res.json()),
-        fetch('/api/categories').then(res => res.json()),
-        fetch('/api/promos').then(res => res.json()),
-        fetch('/api/orders').then(res => res.json()),
+        fetchJson('/api/products'),
+        fetchJson('/api/categories'),
+        fetchJson('/api/promos'),
+        fetchJson('/api/orders'),
       ]);
       set({ products: prods, categories: cats, promoCodes: promos, orders });
     } catch (error) {
