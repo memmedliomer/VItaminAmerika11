@@ -32,6 +32,7 @@ export type Order = {
   items: OrderItem[];
   total: number;
   date: string;
+  status?: 'pending' | 'approved' | 'cancelled';
 };
 
 export type ToastMessage = {
@@ -65,6 +66,7 @@ interface AppState {
   addPromoCode: (pc: PromoCode) => Promise<void>;
   deletePromoCode: (code: string) => Promise<void>;
   addOrder: (o: Order) => Promise<void>;
+  updateOrderStatus: (id: string, status: 'pending' | 'approved' | 'cancelled') => Promise<void>;
   
   addToCart: (p: Product) => void;
   removeFromCart: (id: string) => void;
@@ -118,65 +120,116 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   addProduct: async (p) => {
-    await fetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(p),
-    });
-    get().fetchData();
+    set((state) => ({ products: [...state.products, p] }));
+    try {
+      await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(p),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   updateProduct: async (id, p) => {
     const product = get().products.find(prod => prod.id === id);
     if (!product) return;
-    await fetch(`/api/products/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...product, ...p }),
-    });
-    get().fetchData();
+    
+    set((state) => ({
+      products: state.products.map(prod => prod.id === id ? { ...prod, ...p } : prod)
+    }));
+
+    try {
+      await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...product, ...p }),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   deleteProduct: async (id) => {
-    await fetch(`/api/products/${id}`, { method: 'DELETE' });
-    get().fetchData();
+    set((state) => ({ products: state.products.filter(p => p.id !== id) }));
+    try {
+      await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   addCategory: async (c) => {
-    await fetch('/api/categories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(c),
-    });
-    get().fetchData();
+    set((state) => ({ categories: [...state.categories, c] }));
+    try {
+      await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(c),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   deleteCategory: async (id) => {
-    await fetch(`/api/categories/${id}`, { method: 'DELETE' });
-    get().fetchData();
+    set((state) => ({ categories: state.categories.filter(c => c.id !== id) }));
+    try {
+      await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   addPromoCode: async (pc) => {
-    await fetch('/api/promos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pc),
-    });
-    get().fetchData();
+    set((state) => ({ promoCodes: [...state.promoCodes, pc] }));
+    try {
+      await fetch('/api/promos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pc),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   deletePromoCode: async (code) => {
-    await fetch(`/api/promos/${code}`, { method: 'DELETE' });
-    get().fetchData();
+    set((state) => ({ promoCodes: state.promoCodes.filter(pc => pc.code !== code) }));
+    try {
+      await fetch(`/api/promos/${code}`, { method: 'DELETE' });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   addOrder: async (o) => {
-    await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(o),
-    });
-    get().fetchData();
+    set((state) => ({ orders: [o, ...state.orders] }));
+    try {
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(o),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
+  },
+
+  updateOrderStatus: async (id, status) => {
+    set((state) => ({
+      orders: state.orders.map(o => o.id === id ? { ...o, status } : o)
+    }));
+    try {
+      await fetch(`/api/orders/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      get().fetchData();
+    }
   },
 
   addToCart: (p) => {
