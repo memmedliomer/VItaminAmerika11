@@ -86,50 +86,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <AnimatePresence>
           {showDesc && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-green-50">
-                  <h3 className="font-bold text-green-800">{product.name}</h3>
-                  <button 
-                    onClick={() => setShowDesc(false)}
-                    className="p-1 rounded-full hover:bg-green-100 text-green-700 transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-                <div className="p-6">
-                  <div className="aspect-square w-full mb-6 bg-white rounded-xl border border-gray-50 p-4">
-                    <img 
-                      src={optimizedImageUrl} 
-                      alt={product.name} 
-                      className="w-full h-full object-contain"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  <p className="text-gray-600 leading-relaxed">
-                    {product.description}
-                  </p>
-                  <div className="mt-8 flex items-center justify-between">
-                    <span className="text-2xl font-bold text-green-600">{displayPrice} {currencySymbol}</span>
-                    <button 
-                      onClick={() => {
-                        handleAddToCart();
-                        setShowDesc(false);
-                      }}
-                      className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-sm"
-                    >
-                      {language === 'AZ' ? 'Səbətə əlavə et' : 'Add to cart'}
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mt-3"
+            >
+              <div className="p-3 bg-green-50 rounded-lg border border-green-100 text-sm text-gray-700 leading-relaxed">
+                {product.description}
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
