@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, ShoppingCart, Search, Heart, X, User } from 'lucide-react';
 import { useAppStore } from '../store';
 import { motion, AnimatePresence } from 'motion/react';
+import logo from './logo.jpg';
 
 export default function Navbar() {
   const { cart, language, currency, setLanguage, setCurrency, categories } = useAppStore();
@@ -32,9 +33,7 @@ export default function Navbar() {
                 <Menu size={24} />
               </button>
               <Link to="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                  V
-                </div>
+                <img src={logo} alt="Vitamin Amerika Logo" className="w-10 h-10 object-contain rounded-full" />
                 <span className="font-bold text-xl text-green-800 hidden sm:block">Vitamin Amerika</span>
               </Link>
             </div>
